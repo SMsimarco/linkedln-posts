@@ -84,4 +84,26 @@ assert.throws(
   /evitar duplicados/,
 );
 
-console.log('OK: positive traceability, unsupported fact, unclassified statement, missing human review, unsupported explanation, and stored-row duplicate guard.');
+const workflow = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'linkedin-editorial-v2.template.json'), 'utf8'));
+const telegram = workflow.nodes.find((node) => node.name === 'Send a text message');
+const expression = telegram.parameters.text.replace(/^=\{\{\s*/, '').replace(/\s*\}\}$/, '');
+const renderCard = new Function('$json', `return ${expression};`);
+const card = renderCard({
+  pieza_id: 'local-test-batch-1',
+  tema: 'Prueba de trazabilidad',
+  texto: 'Construyo automatizaciones con n8n.',
+  idea_visual: 'Diagrama de prueba sin datos reales.',
+  evidencia_json: JSON.stringify({
+    tipo: 'educativo',
+    fuentes: [{ id: 'F1', tipo: 'declaracion_personal_confirmada', fecha_confirmacion: '2026-09-28' }],
+    afirmaciones: [{ id: 'A1', afirmacion: 'Construyo automatizaciones con n8n.', tipo: 'hecho', fuente_ids: ['F1'] }],
+    pendientes: [{ afirmacion_id: 'A2', motivo: 'Confirmar la postura.' }],
+  }),
+});
+assert.match(card, /Hechos \/ explicaciones \/ opiniones/);
+assert.match(card, /HECHO · F1/);
+assert.match(card, /Pendientes humanos/);
+assert.ok(card.length <= 3900);
+assert.equal(telegram.parameters.additionalFields.appendAttribution, false);
+
+console.log('OK: typed traceability, rejection guards, duplicate protection, and Telegram card expression/length/attribution.');
