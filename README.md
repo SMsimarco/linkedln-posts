@@ -12,6 +12,7 @@ Cada borrador debe apoyarse en hechos verificables, indicar sus fuentes y pasar 
 - [Ilustración conceptual](outputs/linkedin-agentes-permisos.png): recurso visual para explicar que responder, consultar y actuar requieren permisos y controles distintos. No representa una arquitectura real de Antic ni de un cliente.
 - [Workflow editorial de n8n](workflows/linkedin-editorial-v2.template.json): plantilla sanitizada para generar, validar y guardar borradores en cola.
 - [Workflow de aprobación por Telegram](workflows/linkedin-aprobacion-telegram.template.json): plantilla sanitizada para gestionar la aprobación humana.
+- [Contrato de trazabilidad y pruebas](workflows/traceability-contract.md): clasificación de hechos, explicaciones y opiniones, reglas de revisión y alcance de las pruebas locales.
 
 ## Estado y límites
 
