@@ -1,0 +1,15 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+**/credentials*.json
+
+# n8n local state and execution data
+.n8n/
+n8n_data/
+executions/
