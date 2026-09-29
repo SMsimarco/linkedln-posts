@@ -1,0 +1,222 @@
+{
+  "name": "LinkedIn - Aprobacion Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "configure-linkedin-approval-webhook",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a985ac7b-260d-4e18-acf2-5c7981e84f3a",
+      "name": "Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $input.first().json;\nconst query = payload.query || {};\nconst expectedToken = $env.LINKEDIN_EDITORIAL_APPROVAL_TOKEN;\n\nif (!expectedToken) {\n  throw new Error('Falta configurar LINKEDIN_EDITORIAL_APPROVAL_TOKEN');\n}\nif (!query.token || query.token !== expectedToken) {\n  throw new Error('Solicitud no autorizada');\n}\nif (typeof query.pieza_id !== 'string' || !query.pieza_id.trim()) {\n  throw new Error('pieza_id requerido');\n}\n\nreturn [{\n  json: {\n    pieza_id: query.pieza_id.trim(),\n    estado_actual: 'PENDIENTE_REVISION',\n    estado_nuevo: 'APROBADO',\n    resultado: 'APROBADO'\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "9842c1f3-5915-4003-9061-a5765c2fda8c",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "CONFIGURE_LINKEDIN_EDITORIAL_TABLE_ID",
+          "mode": "list",
+          "cachedResultName": "LinkedIn_Editorial",
+          "cachedResultUrl": ""
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "estado",
+              "keyValue": "PENDIENTE_REVISION"
+            },
+            {
+              "keyName": "pieza_id",
+              "keyValue": "={{$json.pieza_id}}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "APROBADO"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pieza_id",
+              "displayName": "pieza_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "tema",
+              "displayName": "tema",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "texto",
+              "displayName": "texto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "evidencia_json",
+              "displayName": "evidencia_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "idea_visual",
+              "displayName": "idea_visual",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "url_publicada",
+              "displayName": "url_publicada",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "e560a0dd-ba25-4f18-a180-cb0e6eb1c253",
+      "name": "Update row(s)",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "CONFIGURE_LINKEDIN_EDITORIAL_TABLE_ID",
+          "mode": "list"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "pieza_id",
+              "keyValue": "={{$node[\"Code in JavaScript\"].json.pieza_id}}"
+            },
+            {
+              "keyName": "estado",
+              "keyValue": "APROBADO"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        0
+      ],
+      "id": "671ad950-13f0-4f23-9a33-3919e791fab3",
+      "name": "Get row(s)"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Update row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row(s)": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "tags": []
+}
