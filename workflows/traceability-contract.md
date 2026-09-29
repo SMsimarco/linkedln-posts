@@ -39,4 +39,4 @@ node --check workflows/tests/validate_editorial_node.test.cjs
 node workflows/tests/validate_editorial_node.test.cjs
 ```
 
-Las pruebas cubren un caso válido con hecho y opinión marcada, una afirmación factual sin respaldo, una oración declarativa no clasificada, una opinión sin pendiente, una explicación sin fuente primaria y la protección contra reenviar filas existentes.
+Las pruebas cubren un caso válido con hecho y opinión marcada, una afirmación factual sin respaldo, una oración declarativa no clasificada, una opinión sin pendiente, una explicación sin fuente primaria, la protección contra reenviar filas existentes y la expresión de Telegram (sintaxis, trazabilidad visible, límite de longitud y atribución desactivada).
