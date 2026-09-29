@@ -6,6 +6,9 @@ Estos JSON son exports sanitizados para inspección y reutilización. No contien
 
 - `linkedin-editorial-v2.template.json`: flujo editorial de generación, validación y guardado en cola, con aviso a Telegram.
 - `linkedin-aprobacion-telegram.template.json`: endpoint de aprobación y actualización del estado en la tabla editorial.
+- [`traceability-contract.md`](traceability-contract.md): contrato v2 y resultados de la revisión offline de las piezas existentes.
+- [`validate_editorial_node.js`](validate_editorial_node.js): fuente legible del Code node de validación; está embebida en el JSON editorial.
+- [`tests/validate_editorial_node.test.cjs`](tests/validate_editorial_node.test.cjs): pruebas locales sin credenciales ni llamadas externas.
 
 ## Configuración requerida al importar
 
@@ -16,4 +19,6 @@ Estos JSON son exports sanitizados para inspección y reutilización. No contien
 5. Reemplazar el host y la ruta de webhook de ejemplo del botón de aprobación con la URL real de la instancia. Verificar protección, respuesta HTTP y cambio de estado antes de enviar tarjetas reales.
 6. Mantener desactivada la publicación automática. Los borradores requieren revisión humana; estas plantillas no publican en LinkedIn.
 
-Los exports se prepararon sin ejecutar ni activar los workflows. Cualquier prueba de importación o ejecución debe hacerse por separado y con autorización explícita.
+No se ejecutó el workflow completo ni se activó ningún workflow. En la revisión actual se ejecutó únicamente el nodo de lectura del historial, que devolvió seis registros; no se llamó a Anthropic, no se insertaron/actualizaron filas y no se envió Telegram.
+
+Para ejecutar únicamente las pruebas locales del validador: `node workflows/tests/validate_editorial_node.test.cjs` desde la raíz del repositorio. Cualquier cambio o prueba adicional en n8n debe hacerse por separado, sin publicar automáticamente.
